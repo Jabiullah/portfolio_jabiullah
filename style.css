@@ -38,6 +38,9 @@ body {
         .tab-content {
             display: none;
         }
+        .tab.selected {
+            cursor: none; /* Hide the cursor for the selected tab */
+        }
 
         .profile-img {
             width: 150px;
