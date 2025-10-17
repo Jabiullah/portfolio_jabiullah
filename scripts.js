@@ -1,73 +1,108 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Get all tabs and tab contents
-    const tabs = document.querySelectorAll('.tab');
-    const tabContents = document.querySelectorAll('.tab-content');
+// ==================== TAB NAVIGATION MODULE ====================
+const TabNavigation = (function() {
+    const navItems = document.querySelectorAll('.nav__item');
+    const contentSections = document.querySelectorAll('.content');
 
-    // Add click event listener to each tab
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            // Remove upper line and underline from all tabs and remove selected class
-            tabs.forEach(t => {
-                t.style.borderTop = 'none';
-                t.style.textDecoration = 'none';
-                t.classList.remove('selected');
-            });
-
-            // Hide all tab contents
-            tabContents.forEach(content => {
-                content.style.display = 'none';
-            });
-
-            // Show the corresponding tab content and add upper line to the selected tab
-            const tabId = tab.textContent.toLowerCase() + '-content';
-            const tabContent = document.getElementById(tabId);
-            if (tabContent) {
-                tabContent.style.display = 'block';
-                tab.style.borderTop = '2px solid black'; // Add upper line to selected tab
-                tab.style.textDecoration = 'none'; // Remove underline from selected tab
-            }
-
-            // Add the selected class to the clicked tab
-            tab.classList.add('selected');
+    function switchTab(targetTab) {
+        // Remove active state from all tabs
+        navItems.forEach(item => {
+            item.classList.remove('nav__item--active');
         });
-    });
 
-    // Modal functionality for project images
-    const modal = document.createElement('div');
-    modal.classList.add('modal');
-    document.body.appendChild(modal);
-
-    const modalContent = document.createElement('img');
-    modalContent.classList.add('modal-content');
-    modal.appendChild(modalContent);
-
-    const closeButton = document.createElement('span');
-    closeButton.classList.add('close');
-    closeButton.innerHTML = '&times;';
-    modal.appendChild(closeButton);
-
-    const projectImages = document.querySelectorAll('.project-img');
-    projectImages.forEach(img => {
-        img.addEventListener('click', () => {
-            modal.style.display = 'flex'; // Display modal as flex container
-            modalContent.src = img.src;
-            if (img.width > window.innerWidth * 0.8 || img.height > window.innerHeight * 0.8) {
-                modalContent.style.width = '80%'; // Limit larger images to 80% of the window width
-                modalContent.style.height = 'auto'; // Maintain aspect ratio
-            } else {
-                modalContent.style.width = 'auto'; // Allow smaller images to be displayed at their natural width
-                modalContent.style.height = 'auto'; // Allow smaller images to be displayed at their natural height
-            }
+        // Hide all content sections
+        contentSections.forEach(section => {
+            section.classList.remove('content--active');
         });
-    });
 
-    closeButton.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
+        // Activate selected tab
+        const activeNavItem = document.querySelector(`[data-tab="${targetTab}"]`);
+        const activeContent = document.getElementById(`${targetTab}-content`);
 
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
+        if (activeNavItem && activeContent) {
+            activeNavItem.classList.add('nav__item--active');
+            activeContent.classList.add('content--active');
         }
-    });
+    }
+
+    function init() {
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const targetTab = this.getAttribute('data-tab');
+                switchTab(targetTab);
+            });
+
+            // Keyboard accessibility
+            item.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const targetTab = this.getAttribute('data-tab');
+                    switchTab(targetTab);
+                }
+            });
+        });
+    }
+
+    return { init };
+})();
+
+// ==================== IMAGE MODAL MODULE ====================
+const ImageModal = (function() {
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-image');
+    const closeBtn = document.querySelector('.modal__close');
+
+    function openModal(imageSrc, imageAlt) {
+        if (!modal || !modalImg) return;
+        
+        modal.classList.add('modal--active');
+        modalImg.src = imageSrc;
+        modalImg.alt = imageAlt;
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
+
+    function closeModal() {
+        if (!modal) return;
+        
+        modal.classList.remove('modal--active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+
+    function init() {
+        // Close button
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeModal);
+        }
+
+        // Close on background click
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Attach click handlers to all project images
+        const projectImages = document.querySelectorAll('[data-modal-img]');
+        projectImages.forEach(img => {
+            img.addEventListener('click', function() {
+                openModal(this.src, this.alt);
+            });
+        });
+    }
+
+    return { init };
+})();
+
+// ==================== INITIALIZE APP ====================
+document.addEventListener('DOMContentLoaded', function() {
+    TabNavigation.init();
+    ImageModal.init();
 });
