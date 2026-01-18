@@ -42,7 +42,8 @@ const TabNavigation = (function() {
         });
     }
 
-    return { init };
+    // Expose switchTab publicly for other modules
+    return { init, switchTab };
 })();
 
 // ==================== IMAGE MODAL MODULE ====================
@@ -101,8 +102,46 @@ const ImageModal = (function() {
     return { init };
 })();
 
+// ==================== INTERNAL TAB LINK HANDLER ====================
+// ==================== INTERNAL TAB LINK HANDLER ====================
+const InternalTabLinks = (function() {
+    function init() {
+        const links = document.querySelectorAll('a[href^="#"][data-tab]');
+        
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent default anchor jump
+
+                const targetTab = this.getAttribute('data-tab');
+                const targetId = this.getAttribute('data-target'); // new: scroll to specific element
+
+                if (!targetTab) return;
+
+                // Switch the tab
+                TabNavigation.switchTab(targetTab);
+
+                // Scroll to specific element if targetId exists, else scroll to top of section
+                let scrollTarget;
+                if (targetId) {
+                    scrollTarget = document.getElementById(targetId);
+                } else {
+                    scrollTarget = document.getElementById(targetTab + '-content');
+                }
+
+                if (scrollTarget) {
+                    scrollTarget.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    }
+
+    return { init };
+})();
+
+
 // ==================== INITIALIZE APP ====================
 document.addEventListener('DOMContentLoaded', function() {
     TabNavigation.init();
     ImageModal.init();
+    InternalTabLinks.init(); // <-- activate internal tab links
 });

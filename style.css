@@ -24,7 +24,7 @@
     --spacing-xl: 46px;
     
     /* Layout */
-    --profile-img-size: 150px;
+    --profile-img-size: 175px;
     --content-width: 50%;
     --border-radius: 50%;
     
@@ -120,9 +120,10 @@ a:hover {
     height: var(--profile-img-size);
     border-radius: var(--border-radius);
     object-fit: cover;
-    object-position: top;
+    object-position: 50% 30%;
     border: 1px solid var(--color-border);
 }
+
 
 /* ==================== NAVIGATION ==================== */
 .nav {
