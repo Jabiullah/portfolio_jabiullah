@@ -145,15 +145,20 @@ a:hover {
     padding-bottom: 4px;
     border-top: 2px solid transparent;
     transition: all var(--transition-speed);
+
+    color: #9a9a9a;
 }
 
 .nav__item:hover {
     text-decoration: underline;
+    color: #555555;
 }
 
 .nav__item--active {
     border-top-color: var(--color-primary);
+    color: var(--color-primary);
     cursor: default;
+    font-weight: 600;
 }
 
 .nav__item--active:hover {
