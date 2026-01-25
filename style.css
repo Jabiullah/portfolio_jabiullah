@@ -238,6 +238,19 @@ a:hover {
     line-height: 1.8;
 }
 
+/* ==================== TEAM ==================== */
+.team__list {
+    list-style-position: inside; /* keeps bullets aligned with text block */
+    padding-left: 0;             /* remove default indent */
+    margin-top: 1rem;
+}
+
+.team__name {
+    margin-bottom: 0.6rem;
+    font-weight: 500;
+}
+
+
 /* ==================== MODAL ==================== */
 .modal {
     display: none;
@@ -286,6 +299,9 @@ a:hover {
     from { transform: scale(0); }
     to { transform: scale(1); }
 }
+
+
+
 
 /* ==================== RESPONSIVE DESIGN ==================== */
 @media (max-width: 768px) {
